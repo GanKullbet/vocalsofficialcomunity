@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tentang Server - Vocal × Games Community</title>
+  <link rel="icon" href="gamepad.jpg" type="image/png">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #00f0ff;          /* Cyan Neon */
+      --secondary: #ff2d95;        /* Magenta */
+      --purple: #bf5af2;           /* Ungu */
+      --dark: #0a0a12;
+      --dark-2: #12121c;
+      --text: #f0f0f5;
+      --text-muted: #a0a0b0;
+      --discord: #5865F2;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--dark);
+      color: var(--text);
+      overflow-x: hidden;
+      line-height: 1.6;
+    }
+
+    /* MUSIC PANEL */
+    #music-panel {
+      position: fixed; bottom: 25px; right: 25px; z-index: 1001;
+      display: flex; align-items: center; gap: 10px;
+      padding: 8px 10px 8px 8px; border: 1px solid rgba(0,240,255,0.35);
+      border-radius: 18px; background: rgba(10,10,18,0.88);
+      backdrop-filter: blur(12px); box-shadow: 0 8px 30px rgba(0,240,255,0.18);
+    }
+    #music-toggle {
+      width: 52px; height: 52px; border-radius: 50%;
+      background: rgba(10, 10, 18, 0.95); border: 2px solid var(--primary);
+      color: var(--primary); font-size: 1.25rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: 0.3s; box-shadow: 0 0 15px rgba(0,240,255,0.18);
+    }
+    #music-toggle:hover {
+      transform: scale(1.08); background: rgba(0, 240, 255, 0.15);
+      box-shadow: 0 0 22px rgba(0,240,255,0.35);
+    }
+    #music-info { min-width: 135px; color: var(--text); }
+    #music-info .music-label { display: block; font-size: 0.65rem; letter-spacing: 1.5px; color: var(--primary); text-transform: uppercase; }
+    #music-info .music-status { display: block; font-size: 0.78rem; color: var(--text-muted); margin-bottom: 5px; }
+
+    @media (max-width: 600px) {
+      #music-panel { right: 15px; bottom: 15px; }
+      #music-info { min-width: 105px; }
+    }
+
+    /* NAVBAR */
+    nav {
+      position: fixed; top: 0; width: 100%; padding: 1rem 5%;
+      display: flex; justify-content: space-between; align-items: center;
+      z-index: 1000; background: rgba(10,10,18,0.92);
+      backdrop-filter: blur(12px); border-bottom: 1px solid rgba(0,240,255,0.15);
+      transition: 0.3s;
+    }
+    nav.scrolled { padding: 0.7rem 5%; background: rgba(10,10,18,0.97); }
+    .logo { font-family: 'Playfair Display', serif; font-size: 1.35rem; font-weight: 700; color: var(--primary); }
+    .logo span { color: var(--text); font-weight: 400; }
+    .nav-links { display: flex; gap: 1.8rem; list-style: none; }
+    .nav-links a { color: var(--text); text-decoration: none; font-size: 0.92rem; position: relative; transition: 0.3s; }
+    .nav-links a.active { color: var(--primary); }
+    .nav-links a::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 2px; background: var(--primary); transition: 0.3s; }
+    .nav-links a.active::after, .nav-links a:hover::after { width: 100%; }
+    .nav-links a:hover { color: var(--primary); }
+    .nav-right { display: flex; align-items: center; gap: 0.8rem; }
+    .discord-btn {
+      width: 40px; height: 40px; background: var(--discord); border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: 0.3s;
+    }
+    .discord-btn:hover { transform: translateY(-3px) scale(1.08); box-shadow: 0 8px 20px rgba(88,101,242,0.45); }
+    .discord-btn svg { width: 20px; height: 20px; fill: white; }
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 5px; }
+    .hamburger span { width: 24px; height: 2.5px; background: var(--primary); border-radius: 3px; transition: 0.3s; }
+    .hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(6px,6px); }
+    .hamburger.active span:nth-child(2) { opacity: 0; }
+    .hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(6px,-6px); }
+
+    /* Mobile Menu */
+    .mobile-menu {
+      position: fixed; top: 0; right: -100%; width: 75%; max-width: 300px;
+      height: 100vh; background: var(--dark-2); z-index: 999;
+      padding: 5rem 1.8rem 2rem; transition: 0.35s; box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+    }
+    .mobile-menu.active { right: 0; }
+    .mobile-menu a { display: block; color: var(--text); text-decoration: none; font-size: 1.1rem; padding: 0.9rem 0; border-bottom: 1px solid rgba(255,255,255,0.08); }
+    .mobile-menu a:hover, .mobile-menu a.active { color: var(--primary); }
+    .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 998; opacity: 0; visibility: hidden; transition: 0.3s; }
+    .overlay.active { opacity: 1; visibility: visible; }
+
+    /* PAGE HEADER DENGAN VIDEO BACKGROUND */
+    .page-header {
+      position: relative;
+      padding: 10rem 1.2rem 6rem;
+      text-align: center;
+      min-height: 55vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .page-header-video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -2;
+    }
+    .page-header-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(10,10,18,0.85), rgba(18,18,28,0.75));
+      z-index: -1;
+    }
+    .page-header-content {
+      z-index: 1;
+      max-width: 800px;
+      position: relative;
+    }
+    .page-header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.2rem, 6vw, 3.5rem);
+      margin-bottom: 1rem;
+    }
+    .page-header h1 span { color: var(--primary); }
+    .page-header p {
+      color: var(--text-muted);
+      margin: 0 auto;
+      font-size: clamp(0.95rem, 3vw, 1.1rem);
+    }
+
+    /* SECTIONS */
+    section { padding: 4.5rem 1.2rem; }
+    .section-title { text-align: center; margin-bottom: 2.5rem; }
+    .section-title h2 { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 5vw, 2.4rem); margin-bottom: 0.6rem; }
+    .section-title h2 span { color: var(--primary); }
+    .section-title h2 .game { color: var(--secondary); }
+    .section-title p { color: var(--text-muted); font-size: 0.95rem; max-width: 550px; margin: 0 auto; }
+
+    /* CONTENT GRID (About Detail) */
+    .detail-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 3rem;
+      max-width: 1100px; margin: 0 auto; align-items: center;
+    }
+    .detail-text h3 { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--primary); margin-bottom: 1.2rem; }
+    .detail-text p { color: var(--text-muted); margin-bottom: 1.2rem; font-size: 0.98rem; line-height: 1.7; }
+    .detail-img { border-radius: 16px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,240,255,0.1); position: relative; }
+    .detail-img img { width: 100%; height: 100%; object-fit: cover; transition: 0.6s; }
+    .detail-img:hover img { transform: scale(1.05); }
+    .detail-img::after {
+      content: ''; position: absolute; inset: 0;
+      border: 2px solid rgba(0,240,255,0.3); border-radius: 16px; pointer-events: none;
+    }
+
+    /* VISI MISI CARDS (Reusable from dual-card style) */
+    .vision-section { background: var(--dark-2); }
+    .dual-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; max-width: 1100px; margin: 0 auto; }
+    .dual-card {
+      background: var(--dark); border-radius: 18px; padding: 2.5rem 2rem;
+      border: 1px solid rgba(255,255,255,0.05); transition: 0.4s; position: relative; overflow: hidden;
+    }
+    .dual-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px; transform: scaleX(0); transform-origin: left; transition: 0.4s; }
+    .dual-card.vocal::before { background: linear-gradient(90deg, var(--primary), transparent); }
+    .dual-card.game::before { background: linear-gradient(90deg, var(--secondary), transparent); }
+    .dual-card:hover { transform: translateY(-8px); }
+    .dual-card.vocal:hover { border-color: rgba(0,240,255,0.3); box-shadow: 0 15px 35px rgba(0,240,255,0.1); }
+    .dual-card.game:hover { border-color: rgba(255,45,149,0.3); box-shadow: 0 15px 35px rgba(255,45,149,0.1); }
+    .dual-card:hover::before { transform: scaleX(1); }
+    .dual-card h3 { font-size: 1.4rem; margin-bottom: 1rem; }
+    .dual-card.vocal h3 { color: var(--primary); }
+    .dual-card.game h3 { color: var(--secondary); }
+    .dual-card p { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1.2rem; }
+    .dual-card ul { list-style: none; }
+    .dual-card li { padding: 0.4rem 0; font-size: 0.9rem; color: var(--text-muted); display: flex; align-items: center; gap: 0.5rem; }
+
+    /* SERVER ROLES / STRUCTURE */
+    .roles-section { background: var(--dark); }
+    .roles-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; max-width: 1100px; margin: 0 auto; }
+    .role-box {
+      background: rgba(18,18,28,0.6); border: 1px solid rgba(255,255,255,0.08); padding: 1.5rem; border-radius: 14px;
+      display: flex; gap: 1rem; align-items: flex-start; transition: 0.3s;
+    }
+    .role-box:hover { background: rgba(0,240,255,0.05); border-color: rgba(0,240,255,0.3); }
+    .role-icon {
+      width: 45px; height: 45px; background: rgba(0,240,255,0.1); border-radius: 10px;
+      display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0;
+    }
+    .role-info h4 { color: var(--text); font-size: 1.1rem; margin-bottom: 0.3rem; }
+    .role-info p { color: var(--text-muted); font-size: 0.85rem; }
+
+    /* FOOTER */
+    footer { background: #07070d; padding: 2.5rem 1.2rem; text-align: center; border-top: 1px solid rgba(255,255,255,0.05); }
+    footer .logo { margin-bottom: 1rem; display: inline-block; }
+    .social-links { display: flex; justify-content: center; gap: 1rem; margin-bottom: 1.2rem; }
+    .social-links a {
+      width: 44px; height: 44px; border-radius: 50%; background: rgba(255,255,255,0.07);
+      display: flex; align-items: center; justify-content: center; transition: 0.3s;
+    }
+    .social-links a:hover { background: var(--discord); transform: translateY(-3px); }
+    .social-links a svg { width: 20px; height: 20px; fill: white; }
+    footer p { color: var(--text-muted); font-size: 0.85rem; }
+
+    /* ANIMATIONS */
+    .reveal { opacity: 0; transform: translateY(30px); transition: all 0.7s ease; }
+    .reveal.active { opacity: 1; transform: translateY(0); }
+
+    /* RESPONSIVE */
+    @media (max-width: 900px) {
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+      .detail-grid { grid-template-columns: 1fr; text-align: center; }
+      .dual-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 600px) {
+      section { padding: 3.5rem 1.1rem; }
+      .page-header { padding: 7rem 1.2rem 3rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav id="navbar">
+    <div class="logo">Vocal<span>×</span>Games</div>
+    <ul class="nav-links">
+      <!-- Mengubah href mengarah ke halaman utama (index.html) -->
+      <li><a href="index.html#home">Beranda</a></li>
+      <li><a href="about.html" class="active">Tentang</a></li>
+      <li><a href="index.html#community">Komunitas</a></li>
+      <li><a href="index.html#gallery">Gallery</a></li>
+      <li><a href="index.html#join">Gabung</a></li>
+    </ul>
+    <div class="nav-right">
+      <a href="https://discord.gg/2cCe986Av" target="_blank" class="discord-btn">
+        <svg viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+      </a>
+      <div class="hamburger" id="hamburger">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </nav>
+
+  <div class="overlay" id="overlay"></div>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="index.html#home">Beranda</a>
+    <a href="about.html" class="active">Tentang</a>
+    <a href="index.html#community">Komunitas</a>
+    <a href="index.html#gallery">Gallery</a>
+    <a href="index.html#join">Gabung</a>
+    <a href="https://discord.gg/2cCe986Av" target="_blank" style="color:var(--discord);margin-top:1rem;">Join Discord</a>
+  </div>
+
+  <!-- PAGE HEADER WITH VIDEO BACKGROUND -->
+  <header class="page-header">
+    <video class="page-header-video" autoplay muted loop playsinline>
+      <!-- Menambahkan kembali video dari halaman utama -->
+      <source src="yutori-natsu-blue-archive-moewalls-com.mp4" type="video/mp4">
+    </video>
+    <!-- Overlay gelap agar tulisan judul tetap terlihat jelas -->
+    <div class="page-header-overlay"></div>
+    
+    <div class="page-header-content reveal active">
+      <h1>Kenali Server <span>Kami</span> Lebih Dekat</h1>
+      <p>Menjelajahi cerita di balik terbentuknya tempat berkumpulnya para Vocalist dan Gamer sejati.</p>
+    </div>
+  </header>
+
+  <!-- SERVER STORY -->
+  <section class="server-story">
+    <div class="detail-grid">
+      <div class="detail-text reveal">
+        <h3>Sejarah & Latar Belakang Server</h3>
+        <p>Vocal × Games Community awalnya didirikan dari sebuah ide sederhana: menemukan tempat di mana hobi bernyanyi dan bermain game bisa bersatu tanpa batasan. Banyak dari kita yang suka nyanyi sambil mabar, atau butuh teman ngobrol setelah sesi vocal training yang melelahkan.</p>
+        <p>Server Discord ini dibangun untuk menjadi <strong>Safe Space</strong> bagi siapa saja. Tidak peduli apakah kamu seorang penyanyi profesional, pro-player game, atau sekadar orang yang mencari teman baru, server ini adalah rumah keduamu.</p>
+      </div>
+      <div class="detail-img reveal">
+        <img src="dc.jpg" alt="Suasana Server Discord">
+      </div>
+    </div>
+  </section>
+
+  <!-- VISI & MISI -->
+  <section class="vision-section">
+    <div class="section-title reveal">
+      <h2>Visi & <span>Misi</span></h2>
+      <p>Tujuan utama dari server Vocal × Games</p>
+    </div>
+    <div class="dual-grid">
+      <div class="dual-card vocal reveal">
+        <h3>🌟 Visi Komunitas</h3>
+        <p>Menjadi server Discord terbesar dan paling positif yang mampu menaungi dua minat besar secara harmonis: Seni Vokal dan Industri Gaming.</p>
+        <ul>
+          <li>✅ Menciptakan lingkungan yang anti-toxic.</li>
+          <li>✅ Mendorong bakat dan potensi setiap anggota.</li>
+          <li>✅ Menjadi wadah kreatifitas tanpa batas.</li>
+        </ul>
+      </div>
+      <div class="dual-card game reveal">
+        <h3>🎯 Misi Komunitas</h3>
+        <p>Melakukan aktivitas rutin yang menguntungkan semua pihak dan memastikan server selalu aktif, ramah, dan seru untuk dikunjungi setiap hari.</p>
+        <ul>
+          <li>✅ Mengadakan Event Karaoke & Turnamen Game rutin.</li>
+          <li>✅ Menyediakan channel khusus untuk edukasi dan diskusi.</li>
+          <li>✅ Menjaga kenyamanan member lewat moderasi yang adil.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVER STRUCTURE / ROLES -->
+  <section class="roles-section">
+    <div class="section-title reveal">
+      <h2>Struktur <span class="game">Role Server</span></h2>
+      <p>Pilih peranmu dan nikmati akses ke channel-channel eksklusif kami.</p>
+    </div>
+    <div class="roles-grid">
+      <div class="role-box reveal">
+        <div class="role-icon" style="color: var(--primary);">🎤</div>
+        <div class="role-info">
+          <h4>Vocalist Role</h4>
+          <p>Akses ke channel latihan vokal, bedah lagu, dan stage karaoke khusus. Dapatkan feedback dari sesama penyanyi.</p>
+        </div>
+      </div>
+      <div class="role-box reveal">
+        <div class="role-icon" style="color: var(--secondary);">🎮</div>
+        <div class="role-info">
+          <h4>Gamer Role</h4>
+          <p>Membuka channel LFG (Looking for Group), diskusi game spesifik, dan voice channel khusus mabar tanpa gangguan.</p>
+        </div>
+      </div>
+      <div class="role-box reveal">
+        <div class="role-icon" style="color: var(--purple);">🌟</div>
+        <div class="role-info">
+          <h4>Dual-Class / Hybrid</h4>
+          <p>Suka keduanya? Ambil role ini untuk mengaktifkan akses ke seluruh penjuru server tanpa terkecuali.</p>
+        </div>
+      </div>
+      <div class="role-box reveal">
+        <div class="role-icon" style="color: #ffb800;">🛡️</div>
+        <div class="role-info">
+          <h4>Moderator & Staff</h4>
+          <p>Tim garda depan yang memastikan server tetap kondusif, nyaman, dan siap membantu keluhan member baru.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="logo">Vocal<span>×</span>Games</div>
+    <div class="social-links">
+      <a href="https://discord.gg/2cCe986Av" target="_blank">
+        <svg viewBox="0 0 24 24"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+      </a>
+    </div>
+    <p>© 2026 Vocal × Games Community Copyrigt By Ghan Site</p>
+  </footer>
+
+  <!-- SCRIPT UI -->
+  <script>
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      navbar.classList.toggle('scrolled', window.scrollY > 40);
+    });
+
+    const hamburger = document.getElementById('hamburger');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const overlay = document.getElementById('overlay');
+    function toggleMenu() {
+      hamburger.classList.toggle('active');
+      mobileMenu.classList.toggle('active');
+      overlay.classList.toggle('active');
+      document.body.style.overflow = mobileMenu.classList.contains('active') ? 'hidden' : '';
+    }
+    hamburger.addEventListener('click', toggleMenu);
+    overlay.addEventListener('click', toggleMenu);
+    document.querySelectorAll('.mobile-menu a').forEach(link => {
+      link.addEventListener('click', () => { if(mobileMenu.classList.contains('active')) toggleMenu(); });
+    });
+
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('active');
+      });
+    }, { threshold: 0.15 });
+    reveals.forEach(el => observer.observe(el));
+  </script>
+
+  <!-- Background Music -->
+  <audio id="bg-music" autoplay loop preload="auto">
+    <source src="bgm-about.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- Music UI -->
+  <div id="music-panel">
+    <button id="music-toggle" title="Play / Pause Musik" aria-label="Play / Pause Musik">▶</button>
+    <div id="music-info">
+      <span class="music-label">Now Playing</span>
+      <span class="music-status" id="music-status">Music Paused</span>
+    </div>
+  </div>
+
+  <script>
+    const bgMusic = document.getElementById('bg-music');
+    const musicToggle = document.getElementById('music-toggle');
+    const musicStatus = document.getElementById('music-status');
+    bgMusic.volume = 0.5;
+
+    window.addEventListener('load', async () => {
+      try {
+        await bgMusic.play();
+        musicToggle.textContent = 'Ⅱ';
+        musicStatus.textContent = 'Music Playing';
+      } catch (error) {
+        musicToggle.textContent = '▶';
+        musicStatus.textContent = 'Klik Play untuk mulai';
+      }
+    });
+
+    musicToggle.addEventListener('click', async () => {
+      if (bgMusic.paused) {
+        try {
+          await bgMusic.play();
+          musicToggle.textContent = 'Ⅱ';
+          musicStatus.textContent = 'Music Playing';
+        } catch (error) {
+          musicStatus.textContent = 'BGM tidak ditemukan';
+        }
+      } else {
+        bgMusic.pause();
+        musicToggle.textContent = '▶';
+        musicStatus.textContent = 'Music Paused';
+      }
+    });
+
+    bgMusic.addEventListener('play', () => { musicToggle.textContent = 'Ⅱ'; musicStatus.textContent = 'Music Playing'; });
+    bgMusic.addEventListener('pause', () => { musicToggle.textContent = '▶'; musicStatus.textContent = 'Music Paused'; });
+  </script>
+</body>
+</html>
