@@ -69,10 +69,12 @@
     .logo span { color: var(--text); font-weight: 400; }
     .nav-links { display: flex; gap: 1.8rem; list-style: none; }
     .nav-links a { color: var(--text); text-decoration: none; font-size: 0.92rem; position: relative; transition: 0.3s; }
-    .nav-links a.active { color: var(--primary); }
+    
+    /* PERBAIKAN CSS NAVBAR AKTIF */
+    .nav-links a:hover, .nav-links a.active { color: var(--primary); }
     .nav-links a::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 2px; background: var(--primary); transition: 0.3s; }
-    .nav-links a.active::after, .nav-links a:hover::after { width: 100%; }
-    .nav-links a:hover { color: var(--primary); }
+    .nav-links a:hover::after, .nav-links a.active::after { width: 100%; }
+
     .nav-right { display: flex; align-items: center; gap: 0.8rem; }
     .discord-btn {
       width: 40px; height: 40px; background: var(--discord); border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: 0.3s;
@@ -93,7 +95,10 @@
     }
     .mobile-menu.active { right: 0; }
     .mobile-menu a { display: block; color: var(--text); text-decoration: none; font-size: 1.1rem; padding: 0.9rem 0; border-bottom: 1px solid rgba(255,255,255,0.08); }
+    
+    /* PERBAIKAN CSS MOBILE MENU AKTIF */
     .mobile-menu a:hover, .mobile-menu a.active { color: var(--primary); }
+
     .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 998; opacity: 0; visibility: hidden; transition: 0.3s; }
     .overlay.active { opacity: 1; visibility: visible; }
 
@@ -110,36 +115,18 @@
       overflow: hidden;
     }
     .page-header-video {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      z-index: -2;
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      object-fit: cover; z-index: -2;
     }
     .page-header-overlay {
-      position: absolute;
-      inset: 0;
+      position: absolute; inset: 0;
       background: linear-gradient(135deg, rgba(10,10,18,0.85), rgba(18,18,28,0.75));
       z-index: -1;
     }
-    .page-header-content {
-      z-index: 1;
-      max-width: 800px;
-      position: relative;
-    }
-    .page-header h1 {
-      font-family: 'Playfair Display', serif;
-      font-size: clamp(2.2rem, 6vw, 3.5rem);
-      margin-bottom: 1rem;
-    }
+    .page-header-content { z-index: 1; max-width: 800px; position: relative; }
+    .page-header h1 { font-family: 'Playfair Display', serif; font-size: clamp(2.2rem, 6vw, 3.5rem); margin-bottom: 1rem; }
     .page-header h1 span { color: var(--primary); }
-    .page-header p {
-      color: var(--text-muted);
-      margin: 0 auto;
-      font-size: clamp(0.95rem, 3vw, 1.1rem);
-    }
+    .page-header p { color: var(--text-muted); margin: 0 auto; font-size: clamp(0.95rem, 3vw, 1.1rem); }
 
     /* SECTIONS */
     section { padding: 4.5rem 1.2rem; }
@@ -235,11 +222,11 @@
   <nav id="navbar">
     <div class="logo">Vocal<span>×</span>Games</div>
     <ul class="nav-links">
-      <!-- Mengubah href mengarah ke halaman utama (index.html) -->
       <li><a href="lobby.html">Beranda</a></li>
+      <!-- PERBAIKAN HTML NAVBAR -->
       <li><a href="about.html" class="active">Tentang</a></li>
       <li><a href="Fansart.html">Fans Art Gallery</a></li>
-      <li><a href="index.html#gallery">Gallery</a></li>
+      <li><a href="lobby.html#gallery">Gallery</a></li>
       <li><a href="index.html#join">Gabung</a></li>
     </ul>
     <div class="nav-right">
@@ -254,6 +241,7 @@
 
   <div class="overlay" id="overlay"></div>
   <div class="mobile-menu" id="mobileMenu">
+    <!-- PERBAIKAN HTML MOBILE MENU -->
     <a href="lobby.html">Beranda</a>
     <a href="about.html" class="active">Tentang</a>
     <a href="Fansart.html">Fans Art Gallery</a>
@@ -265,12 +253,9 @@
   <!-- PAGE HEADER WITH VIDEO BACKGROUND -->
   <header class="page-header">
     <video class="page-header-video" autoplay muted loop playsinline>
-      <!-- Menambahkan kembali video dari halaman utama -->
       <source src="yutori-natsu-blue-archive-moewalls-com.mp4" type="video/mp4">
     </video>
-    <!-- Overlay gelap agar tulisan judul tetap terlihat jelas -->
     <div class="page-header-overlay"></div>
-    
     <div class="page-header-content reveal active">
       <h1>Kenali Server <span>Kami</span> Lebih Dekat</h1>
       <p>Menjelajahi cerita di balik terbentuknya tempat berkumpulnya para Vocalist dan Gamer sejati.</p>
@@ -368,7 +353,6 @@
     <p>© 2026 Vocal × Games Community Copyrigt By Ghan Site</p>
   </footer>
 
-  <!-- SCRIPT UI -->
   <script>
     const navbar = document.getElementById('navbar');
     window.addEventListener('scroll', () => {
